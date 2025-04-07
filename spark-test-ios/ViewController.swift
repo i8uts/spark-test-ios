@@ -7,13 +7,12 @@
 
 import UIKit
 
-// - collection view hScroll
-// H[-collectionView-]
-// V.center
-// height 150
+protocol ItemListView {
+    func addItem()
+    func removeItem(at position: Int)
+}
 
-
-class ViewController: UIViewController {
+class ViewController: UIViewController, ItemListView {
     var itemsCount = 0
     var collectionView: UICollectionView!
 
@@ -35,6 +34,10 @@ class ViewController: UIViewController {
 
     @objc
     func tapped() {
+        addItem()
+    }
+
+    func addItem() {
         itemsCount += 1
         collectionView.reloadData()
         collectionView.scrollToItem(at: IndexPath(row: itemsCount - 1, section: 0), at: UICollectionView.ScrollPosition.right, animated: true)
@@ -99,8 +102,6 @@ extension ViewController: UICollectionViewDataSource {
               let index = collectionView.indexPath(for: cell)?.row else {
             return
         }
-        print("Cell origin y: \(cell.frame.origin.y)")
-//        print("Cell origin y: \(cell.frame.origin.y)")
 
         switch recognizer.state {
         case .changed:
@@ -113,7 +114,6 @@ extension ViewController: UICollectionViewDataSource {
             }
 
         case .ended:
-            
             if abs(cell.transform.ty) > 75 {
                 self.removeItem(at: index)
                 return
