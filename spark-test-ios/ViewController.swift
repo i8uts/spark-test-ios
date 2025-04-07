@@ -14,6 +14,7 @@ import UIKit
 
 
 class ViewController: UIViewController {
+    var itemsCount = 0
     var collectionView: UICollectionView!
 
     override func viewDidLoad() {
@@ -23,6 +24,18 @@ class ViewController: UIViewController {
 
     func setupUI() {
         setupCollectionView()
+        addTapHandler()
+    }
+
+    func addTapHandler() {
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped)))
+    }
+
+    @objc
+    func tapped() {
+        itemsCount += 1
+        collectionView.reloadData()
+        collectionView.scrollToItem(at: IndexPath(row: itemsCount - 1, section: 0), at: UICollectionView.ScrollPosition.right, animated: true)
     }
 
     func setupCollectionView() {
@@ -47,12 +60,11 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UICollectionViewDelegate {
-    
 }
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return itemsCount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
