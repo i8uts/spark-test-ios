@@ -28,7 +28,9 @@ class ViewController: UIViewController {
     }
 
     func addTapHandler() {
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped)))
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        recognizer.numberOfTapsRequired = 2
+        view.addGestureRecognizer(recognizer)
     }
 
     @objc
@@ -36,6 +38,13 @@ class ViewController: UIViewController {
         itemsCount += 1
         collectionView.reloadData()
         collectionView.scrollToItem(at: IndexPath(row: itemsCount - 1, section: 0), at: UICollectionView.ScrollPosition.right, animated: true)
+    }
+
+    func removeItem(at position: Int) {
+        itemsCount -= 1
+        collectionView.performBatchUpdates {
+            collectionView.deleteItems(at: [.init(row: position, section: 0)])
+        }
     }
 
     func setupCollectionView() {
@@ -60,6 +69,9 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        removeItem(at: indexPath.row)
+    }
 }
 
 extension ViewController: UICollectionViewDataSource {
